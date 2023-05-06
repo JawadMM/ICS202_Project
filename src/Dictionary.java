@@ -42,7 +42,7 @@ public class Dictionary {
 
   public void deleteWord(String s) throws WordNotFoundException {
     if (dictionary.search(s) == false) {
-      throw new WordNotFoundException("The word \"" + s + "\"does not exist in the dictionary" );
+      throw new WordNotFoundException("The word \"" + s + "\" does not exist in the dictionary" );
     }
 
     else {
@@ -91,11 +91,11 @@ public class Dictionary {
       diff = false;
 
       if (firstWord.length() > secondWord.length()) {
-        return lettersAreDifferent(firstWord, secondWord, firstIndex++, secondIndex, diff);
+        return lettersAreDifferent(firstWord, secondWord, firstIndex + 1, secondIndex, diff);
       }
 
       else {
-        return lettersAreDifferent(firstWord, secondWord, firstIndex, secondIndex++, diff);
+        return lettersAreDifferent(firstWord, secondWord, firstIndex, secondIndex + 1, diff);
       }
     }
 

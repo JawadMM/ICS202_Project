@@ -23,8 +23,22 @@ public class Test {
       // TODO Auto-generated catch block
     }
 
+    String word = "";
+    
+    System.out.print("\ncheck word> ");
+    word = scanner.nextLine();
+    if (dictionary.findWord(word))
+    {
+        System.out.println(word + " found in dictionary");
+    }
+    else
+    {
+        System.out.println(word + " not found in dictionary");
+    }
+
+
     System.out.print("\nadd a word> ");
-    String word = scanner.nextLine();
+    word = scanner.nextLine();
 
     if (word.length() > 0) {
 
@@ -57,13 +71,15 @@ public class Test {
     String[] similarWords =  dictionary.findSimilar(word);
 
     for(int i = 0; i < similarWords.length; i++) {
-      if (i <= similarWords.length - 1) {
-        System.out.print(similarWords[i] + ", ");
-      }
+      // if (i <= similarWords.length - 1) {
+      //   System.out.print(similarWords[i] + ", ");
+      // }
 
-      else {
-        System.out.println(similarWords[i] + ".");
-      }
+      // else {
+      //   System.out.println(similarWords[i] + ".");
+      // }
+
+      System.out.println(similarWords[i]);
     }
 
     System.out.print("Save updated dictionary (Y/N)> ");
