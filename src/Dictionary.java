@@ -6,111 +6,99 @@ import java.util.Scanner;
 
 public class Dictionary {
   
-  private AVLTree<String> dictionary;
+  private AVLTree<String> words;
 
   public Dictionary() {
-    dictionary = new AVLTree<String>();
+    words = new AVLTree<String>();
   }
 
-  public Dictionary(String s) {
-    dictionary = new AVLTree<>();
-    dictionary.insertAVL(s);
+  public Dictionary(String word) {
+    words = new AVLTree<String>();
+    words.insertAVL(word);
   }
 
   public Dictionary(File file) throws FileNotFoundException {
-    dictionary = new AVLTree<>();
+    words = new AVLTree<String>();
     Scanner scanner = new Scanner(file);
     while (scanner.hasNextLine()) {
-      dictionary.insertAVL(scanner.nextLine());
+      words.insertAVL(scanner.nextLine());
     }
     scanner.close();
   }
 
-  public void addWord(String s) throws WordAlreadyExistsException {
-    if (dictionary.search(s) == true) {
-      throw new WordAlreadyExistsException("The word \"" + s + "\" is already in the dictionaty");
-    }
-
+  public void addWord(String word) throws WordAlreadyExistsException {
+    if (words.search(word)) {
+      throw new WordAlreadyExistsException("The word \"" + word + "\" is already in the dictionary");
+    } 
     else {
-      dictionary.insertAVL(s);
+      words.insertAVL(word);
     }
   }
 
-  public boolean findWord(String s) {
-    return dictionary.search(s);
+  public boolean findWord(String word) {
+    return words.search(word);
   }
 
-  public void deleteWord(String s) throws WordNotFoundException {
-    if (dictionary.search(s) == false) {
-      throw new WordNotFoundException("The word \"" + s + "\" does not exist in the dictionary" );
-    }
-
+  public void deleteWord(String word) throws WordNotFoundException {
+    if (words.search(word)) {
+      words.deleteAVL(word);
+    } 
     else {
-      dictionary.deleteAVL(s);
+      throw new WordNotFoundException("The word \"" + word + "\" does not exist in the dictionary" );
     }
   }
 
-  public String[] findSimilar(String s) {
-    return findSimilar(dictionary.root, s).split(" ");
+  public String[] findSimilar(String word) {
+    return findSimilar(words.root, word).split(" ");
   }
 
-  private String findSimilar(BTNode<String> node, String s) {
+  private String findSimilar(BTNode<String> node, String word) {
     if (node == null) {
       return "";
-    }
-
-    else if (lettersAreDifferent(node.data, s)) {
-      return node.data + " " + findSimilar(node.right, s) + findSimilar(node.left, s);
-    }
-
+    } 
+    else if (lettersAreDifferent(node.data, word)) {
+      return node.data + " " + findSimilar(node.right, word) + findSimilar(node.left, word);
+    } 
     else {
-      return findSimilar(node.left, s) + findSimilar(node.right, s);
+      return findSimilar(node.left, word) + findSimilar(node.right, word);
     }
   }
 
-  private boolean lettersAreDifferent(String firstWord, String secondWord) {
-    if (Math.abs(firstWord.length() - secondWord.length()) > 1) { // cant it be more than 0?
-      return false;
-    }
+  // private boolean lettersAreDifferent(String firstWord, String secondWord) {
+  //   if (Math.abs(firstWord.length() - secondWord.length()) > 1) {
+  //     return false;
+  //   } 
+  //   else {
+  //     return lettersAreDifferent(firstWord, secondWord, 0, 0, true);
+  //   }
+  // }
 
-    else {
-      return lettersAreDifferent(firstWord, secondWord, 0, 0, true);
-    }
-  }
-
-  private boolean lettersAreDifferent(String firstWord, String secondWord, int firstIndex, int secondIndex, boolean diff) {
-    if (firstIndex >= firstWord.length() || secondIndex >= secondWord.length()) {
-      return true;
-    }
-
-    else if ((firstWord.charAt(firstIndex) != secondWord.charAt(secondIndex)) && !diff) {
-      return false;
-    }
-
-    else if ((firstWord.charAt(firstIndex) != secondWord.charAt(secondIndex)) && diff) {
-      diff = false;
-
-      if (firstWord.length() > secondWord.length()) {
-        return lettersAreDifferent(firstWord, secondWord, firstIndex + 1, secondIndex, diff);
-      }
-
-      else {
-        return lettersAreDifferent(firstWord, secondWord, firstIndex, secondIndex + 1, diff);
-      }
-    }
-
-    else {
-      return lettersAreDifferent(firstWord, secondWord, firstIndex + 1, secondIndex + 1, diff);
-    }
-  }
+  // private boolean lettersAreDifferent(String firstWord, String secondWord, int firstIndex, int secondIndex, boolean diff) {
+  //   if (firstIndex >= firstWord.length() || secondIndex >= secondWord.length()) {
+  //     return true;
+  //   } 
+  //   else if ((firstWord.charAt(firstIndex) != secondWord.charAt(secondIndex)) && !diff) {
+  //     return false;
+  //   } 
+  //   else if ((firstWord.charAt(firstIndex) != secondWord.charAt(secondIndex)) && diff) {
+  //     diff = false;
+  //     if (firstWord.length() > secondWord.length()) {
+  //       return lettersAreDifferent(firstWord, secondWord, firstIndex + 1, secondIndex, diff);
+  //     } 
+  //     else if (firstWord.length() < secondWord.length()) {
+  //       return lettersAreDifferent(firstWord, secondWord, firstIndex, secondIndex + 1, diff);
+  //     }
+  //   }
+  //   return lettersAreDifferent(firstWord, secondWord, firstIndex + 1, secondIndex + 1, diff);
+  // }
 
   public void print() {
-    dictionary.levelOrderTraversal();
+    words.levelOrderTraversal();
   }
 
   public void upload(String fileName) {
     try {
-      BTNode<String> root = dictionary.root;
+      BTNode<String> root = words.root;
       LabQueue<BTNode<String>> queue = new LabQueue();
       FileWriter fileWriter = new FileWriter(fileName);
 
@@ -138,5 +126,40 @@ public class Dictionary {
     catch (IOException e) {
       System.out.println("The file " + fileName + " does not exist.");
     }
+  }
+
+  private boolean lettersAreDifferent(String firstWord, String secondWord) {
+    if (Math.abs(firstWord.length() - secondWord.length()) > 1) {
+      return false;
+    }
+
+    boolean diff = true;
+    int i = 0;
+    int j = 0;
+
+    while (i < firstWord.length() && j < secondWord.length()) {
+      if (firstWord.charAt(i) != secondWord.charAt(j)) {
+        if (!diff) {
+          return false;
+        }
+        diff = false;
+        if (firstWord.length() > secondWord.length()) {
+          i++;
+        } 
+        else if (firstWord.length() < secondWord.length()) {
+          j++;
+        } 
+        else {
+          i++;
+          j++;
+        }
+      } 
+      
+      else {
+        i++;
+        j++;
+      }
+    }
+    return true;
   }
 }

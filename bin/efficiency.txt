@@ -1,0 +1,16 @@
+The complexity of the findWord Method is O(log n).
+
+The complexity of the addWord Method is O(log n).
+
+The complexity of the deleteWord Method is O(log n).
+
+The complexity of the lettersAreDifferent Method is O(n).
+
+The complexity of the print Method is O(n).
+
+The complexity of the upload Method is O(n).
+
+The complexity of the findSimilar Method is O(n).
+
+
+
